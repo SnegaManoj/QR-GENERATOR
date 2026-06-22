@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
+</head>
+<body>
+  <div class="backdrop backdrop-a"></div>
+  <div class="backdrop backdrop-b"></div>
+  <div class="backdrop backdrop-c"></div>
+
+  <div class="app-shell">
+    <header class="hero glass">
+      <div>
+        <p class="eyebrow">Essential QR Generator</p>
+        <h1>Clean, fast, scannable QR codes.</h1>
+        <p class="subtitle">Generate highly accurate QR codes with custom shapes, colors, logo support, live preview, and PNG, SVG, or JPG export.</p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button">Light Mode</button>
+    </header>
+
+    <main class="dashboard">
+      <section class="glass panel editor-panel">
+        <div class="section-head">
+          <div>
+            <h2>QR Content</h2>
+            <p>Choose the data type and enter the content to encode.</p>
+          </div>
+          <div id="statusBadge" class="status-badge" data-tone="neutral">Ready</div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field field-span-2">
+            <span>Content</span>
+            <textarea id="qrText" rows="5" placeholder="Enter URL, text, email, phone number, or WhatsApp number"></textarea>
+          </label>
+
+          <label class="field">
+            <span>Content Type</span>
+            <select id="contentType">
+              <option value="auto">Auto Detect</option>
+              <option value="url">URL</option>
+              <option value="text">Text</option>
+              <option value="email">Email</option>
+              <option value="phone">Phone Number</option>
+              <option value="whatsapp">WhatsApp</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>QR Size</span>
+            <select id="qrSize">
+              <option value="200">200px</option>
+              <option value="300">300px</option>
+              <option value="400" selected>400px</option>
+              <option value="500">500px</option>
+              <option value="600">600px</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Body Style</span>
+            <select id="bodyStyle">
+              <option value="square">Square</option>
+              <option value="rounded" selected>Rounded</option>
+              <option value="dot">Dot</option>
+              <option value="diamond">Diamond</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Corner Frame Style</span>
+            <select id="cornerFrameStyle">
+              <option value="square">Square</option>
+              <option value="rounded" selected>Rounded</option>
+              <option value="circle">Circle</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Corner Dot Style</span>
+            <select id="cornerDotStyle">
+              <option value="square">Square</option>
+              <option value="circle" selected>Circle</option>
+              <option value="rounded">Rounded</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Foreground Color</span>
+            <input id="fgColor" type="color" value="#0f172a" />
+          </label>
+
+          <label class="field">
+            <span>Background Color</span>
+            <input id="bgColor" type="color" value="#ffffff" />
+          </label>
+
+          <label class="field field-span-2 toggle-field">
+            <span>Gradient Colors</span>
+            <div class="inline-controls">
+              <label><input id="gradientEnabled" type="checkbox" /> Enable gradient</label>
+              <label><input id="gradientAngle" type="range" min="0" max="360" value="0" /> Angle</label>
+            </div>
+            <div class="form-grid compact-grid">
+              <label class="field">
+                <span>Gradient Start</span>
+                <input id="gradientStart" type="color" value="#0f172a" />
+              </label>
+              <label class="field">
+                <span>Gradient End</span>
+                <input id="gradientEnd" type="color" value="#7c3aed" />
+              </label>
+            </div>
+          </label>
+
+          <label class="field">
+            <span>Logo Size</span>
+            <input id="logoSize" type="range" min="10" max="30" value="18" />
+          </label>
+
+          <label class="field">
+            <span>QR Quality</span>
+            <div class="quality-note">High error correction is always enabled for maximum scan accuracy.</div>
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button id="generateBtn" class="primary-btn" type="button">Generate QR</button>
+          <button id="resetBtn" class="secondary-btn" type="button">Reset</button>
+        </div>
+
+        <div class="section-head section-spaced">
+          <div>
+            <h2>Logo Features</h2>
+            <p>Upload, replace, remove, and preview a PNG or JPG logo.</p>
+          </div>
+        </div>
+
+        <div class="logo-uploader">
+          <label class="file-drop">
+            <input id="logoUpload" type="file" accept="image/png,image/jpeg" />
+            <span>Upload Logo</span>
+            <small>PNG or JPG</small>
+          </label>
+
+          <div class="logo-actions">
+            <button id="replaceLogoBtn" class="secondary-btn" type="button">Replace Logo</button>
+            <button id="removeLogoBtn" class="secondary-btn" type="button">Remove Logo</button>
+          </div>
+
+          <div id="logoColorHints" class="logo-hints">
+            <div><strong>Auto color detection:</strong> upload a logo to suggest matching QR colors.</div>
+            <div><strong>Safety check:</strong> logo size is limited to protect scan accuracy.</div>
+          </div>
+        </div>
+
+        <div id="message" class="message" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="glass panel preview-panel">
+        <div class="section-head">
+          <div>
+            <h2>Live Preview</h2>
+            <p>Instant updates with a clean preview state and no loading loops.</p>
+          </div>
+          <div class="preview-chip">QR Ready · High Scan Quality</div>
+        </div>
+
+        <div class="preview-stage">
+          <div class="preview-card">
+            <div id="qrcode" class="qrcode-host" aria-label="QR code preview"></div>
+            <img id="logoPreview" class="logo-preview hidden" alt="Uploaded logo preview" />
+          </div>
+        </div>
+
+        <div class="preview-meta">
+          <div class="preview-meta-item">
+            <span>Status</span>
+            <strong id="previewStatus">Not generated yet</strong>
+          </div>
+          <div class="preview-meta-item">
+            <span>Size</span>
+            <strong id="previewSize">400px</strong>
+          </div>
+          <div class="preview-meta-item">
+            <span>Logo Safety</span>
+            <strong id="logoSafety">Safe</strong>
+          </div>
+          <div class="preview-meta-item preview-wide">
+            <span>Scan Quality</span>
+            <strong id="scanQuality">High error correction enabled</strong>
+          </div>
+        </div>
+
+        <div class="button-grid">
+          <button id="downloadPngBtn" class="secondary-btn" type="button">Download PNG</button>
+          <button id="downloadSvgBtn" class="secondary-btn" type="button">Download SVG</button>
+          <button id="downloadJpgBtn" class="secondary-btn" type="button">Download JPG</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
